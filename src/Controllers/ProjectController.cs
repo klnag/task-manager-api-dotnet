@@ -25,9 +25,9 @@ public class ProjectController : ControllerBase {
         User user = context.Users.FirstOrDefault(u => u.Id == id);
         if (user != null)
         {
-            if (context.Projects.FirstOrDefault(proj => proj.name == name) == null)
+            if (context.Projects.FirstOrDefault(proj => proj.Name == name) == null)
             {
-                Project newProject = new Project { name = name, User = user };
+                Project newProject = new Project { Name = name, User = user };
                 context.Projects.Add(newProject);
                 context.SaveChanges();
                 return "project created" + newProject.Id;
@@ -45,7 +45,7 @@ public class ProjectController : ControllerBase {
         {
             return "project does not exisit";
         }
-        project.name = projectFormBody.name;
+        project.Name = projectFormBody.Name;
         context.Projects?.Update(project);
         context.SaveChanges();
         return "project updated";
