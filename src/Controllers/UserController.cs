@@ -28,12 +28,12 @@ public class UserController : ControllerBase {
         return user; 
     }
     [HttpPost] 
-    public string Post([FromBody] User userFormBody) {
-        if(context.Users?.FirstOrDefault(user => user.Username == userFormBody.Username) == null) {
-            User newUser = new User { Username = userFormBody.Username };
+    public string Post(string username) {
+        if(context.Users?.FirstOrDefault(user => user.Username == username) == null) {
+            User newUser = new User { Username = username };
             context.Users?.Add(newUser);
             context.SaveChanges();
-            return "user created";
+            return "user created with id: " + newUser.Id;
         }
         return "user already exisit";
     }

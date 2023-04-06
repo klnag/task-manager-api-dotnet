@@ -8,5 +8,4 @@ public class User {
     [Required]
     public string? Username { get; set; }
     public List<Project>? Projects { get; set; }
-    public List<int>? ProjectsId { get; set; }
 }

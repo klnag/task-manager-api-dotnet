@@ -20,15 +20,21 @@ public class ProjectController : ControllerBase {
     }
 
     [HttpPost]
-    public string Post([FromBody] Project projectFormBody)
+    public string Post(int id, string name)
     {
-        if(context.Projects?.FirstOrDefault(project => project.name == projectFormBody.name) == null) {
-            Project project = new() { name=projectFormBody.name, UserId=projectFormBody.UserId };
-            context.Projects?.Add(project);
-            context.SaveChanges();
-            return "project created";
+        User user = context.Users.FirstOrDefault(u => u.Id == id);
+        if (user != null)
+        {
+            if (context.Projects.FirstOrDefault(proj => proj.name == name) == null)
+            {
+                Project newProject = new Project { name = name, User = user };
+                context.Projects.Add(newProject);
+                context.SaveChanges();
+                return "project created" + newProject.Id;
+            }
+            return "project already exists";
         }
-        return "project exist";
+        return "user not found";
     }
 
     [HttpPatch("{id}")]

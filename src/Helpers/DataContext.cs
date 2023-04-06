@@ -20,4 +20,12 @@ public class DataContext : DbContext
 
     public DbSet<User>? Users { get; set; }
     public DbSet<Project>? Projects { get; set; }
+
+    //protected override void OnModelCreating(ModelBuilder modelBuilder)
+    //{
+    //    modelBuilder.Entity<Project>()
+    //        .HasOne(p => p.User)
+    //        .WithMany(u => u.Projects)
+    //        .HasForeignKey(p => p.Id);
+    //}
 }
