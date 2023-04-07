@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using src.Helpers;
-using src.Entities;
+using src.Models.ProjectModel;
+using src.Models.UserModel;
 
 namespace src.Controllers;
 

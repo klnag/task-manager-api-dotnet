@@ -1,7 +1,9 @@
 namespace src.Helpers;
 
 using Microsoft.EntityFrameworkCore;
-using src.Entities;
+using src.Models.ProjectModel;
+using src.Models.UserModel;
+using src.Models.TodoModel;
 
 public class DataContext : DbContext
 {

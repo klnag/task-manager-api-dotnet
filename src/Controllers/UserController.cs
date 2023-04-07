@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using src.Helpers;
-using src.Entities;
+using src.Models.UserModel;
 
 namespace src.Controllers;
 
@@ -28,14 +28,14 @@ public class UserController : ControllerBase {
         return user; 
     }
     [HttpPost] 
-    public string Post(string username) {
-        if(context.Users?.FirstOrDefault(user => user.Username == username) == null) {
-            User newUser = new User { Username = username };
+    public ActionResult<User> Post(User userFormBody) {
+        if(context.Users?.FirstOrDefault(user => user.Email == userFormBody.Email) == null) {
+            User newUser = new User { Username = userFormBody.Username, Email = userFormBody.Email, Password = userFormBody.Password };
             context.Users?.Add(newUser);
             context.SaveChanges();
-            return "user created with id: " + newUser.Id;
+            return newUser;
         }
-        return "user already exisit";
+        return new BadRequestObjectResult("user with that email exist already exisit");
     }
 
     [HttpPatch("{id}")]

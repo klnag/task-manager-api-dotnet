@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-
-namespace src.Entities;
+using src.Models.UserModel;
+using src.Models.TodoModel;
+namespace src.Models.ProjectModel;
 
 public class Project {
     [Key]

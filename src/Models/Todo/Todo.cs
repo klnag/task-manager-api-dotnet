@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-
-namespace src.Entities;
+using src.Models.ProjectModel;
+namespace src.Models.TodoModel;
 
 public class Todo {
     [Key]
