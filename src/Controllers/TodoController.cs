@@ -3,10 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using src.Helpers;
 using src.Models.TodoModel;
 using src.Models.ProjectModel;
+using Microsoft.AspNetCore.Authorization;
 
 namespace src.Controllers;
 
-[ApiController]
+[ApiController, Authorize]
 [Route("api/[controller]")]
 public class TodoController : ControllerBase {
     private readonly DataContext context;
@@ -46,7 +47,7 @@ public class TodoController : ControllerBase {
         {
             return "Todo does not exisit";
         }
-        Todo.Title = TodoFormBody.Title;
+    Todo.Title = TodoFormBody.Title;
         context.Todos?.Update(Todo);
         context.SaveChanges();
         return "Todo updated";

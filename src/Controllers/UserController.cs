@@ -31,12 +31,12 @@ public class UserController : ControllerBase {
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    [HttpGet]
-    public DbSet<User>? Get() {
-        return context.Users;
-    }
+    // [HttpGet]
+    // public DbSet<User>? Get() {
+    //     return context.Users;
+    // }
 
-    [HttpGet("info"), Authorize()]
+    [HttpGet(), Authorize()]
     public ActionResult<User> GetInfo() {
         string id = User.Identity.Name;
         User? user = context.Users?.Find(int.Parse(id));
@@ -70,9 +70,10 @@ public class UserController : ControllerBase {
         return userCreateJwt(user.Id+"");
     }
 
-    [HttpPatch("{id}")]
-    public string Patch(int id, [FromBody] User userFormBody) {
-        User? user = context.Users?.Find(id);
+    [HttpPatch, Authorize]
+    public string Patch([FromBody] User userFormBody) {
+        string id = User.Identity.Name;
+        User? user = context.Users?.Find(int.Parse(id));
         if(user == null){
             return "user does not exisit";
         }
@@ -83,9 +84,10 @@ public class UserController : ControllerBase {
     }
 
 
-    [HttpDelete("{id}")]
-    public string Delete(int id) {
-        User? user = context.Users?.Find(id);
+    [HttpDelete(), Authorize]
+    public string Delete() {
+        string id = User.Identity.Name;
+        User? user = context.Users?.Find(int.Parse(id));
         if(user == null){
             return "user does not exisit";
         }

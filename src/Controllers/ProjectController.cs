@@ -3,10 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using src.Helpers;
 using src.Models.ProjectModel;
 using src.Models.UserModel;
+using Microsoft.AspNetCore.Authorization;
 
 namespace src.Controllers;
 
-[ApiController]
+[ApiController, Authorize]
 [Route("api/[controller]")]
 public class ProjectController : ControllerBase {
     private readonly DataContext context;
