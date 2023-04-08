@@ -6,6 +6,7 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authorization;
 
 namespace src.Controllers;
 
@@ -22,7 +23,7 @@ public class UserController : ControllerBase {
 
     private string userCreateJwt(string id) {
         List<Claim> claims = new List<Claim> {
-            new Claim(ClaimTypes.NameIdentifier, id)
+            new Claim(ClaimTypes.Name, id)
         };
         SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value!));
         SigningCredentials cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
@@ -35,9 +36,10 @@ public class UserController : ControllerBase {
         return context.Users;
     }
 
-    [HttpGet("{id}")]
-    public ActionResult<User> Get(int id) {
-        User? user = context.Users?.Find(id);
+    [HttpGet("info"), Authorize()]
+    public ActionResult<User> GetInfo() {
+        string id = User.Identity.Name;
+        User? user = context.Users?.Find(int.Parse(id));
         if(user == null) {
             return new BadRequestObjectResult("user does not exsist");
         }
@@ -50,7 +52,8 @@ public class UserController : ControllerBase {
             User newUser = new User { Username = userFormBody.Username, Email = userFormBody.Email, Password = hashPassword };
             context.Users?.Add(newUser);
             context.SaveChanges();
-            return userCreateJwt(newUser.Id+"");
+            string token = userCreateJwt(newUser.Id+"");
+            return token;
         }
         return new BadRequestObjectResult("user with that email exist already exisit");
     }
