@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using src.Models.UserModel;
 using src.Models.TodoModel;
+using System.Text.Json.Serialization;
+
 namespace src.Models.ProjectModel;
 
 public class Project {
@@ -9,6 +11,8 @@ public class Project {
     [Required]
     public string Name { get; set; }
     public int UserId { get; set; }
+    [JsonIgnore]
     public User User { get; set; }
-    public List<Todo>? Todos { get; set; }
+    [JsonIgnore]
+    public ICollection<Todo>? Todos { get; set; }
 }

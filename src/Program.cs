@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters; 
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,9 @@ builder.Services.AddAuthentication().AddJwtBearer(option => {
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value!))
     }; 
 });
+builder.Services.AddControllers().AddJsonOptions(option => 
+    option.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve
+);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

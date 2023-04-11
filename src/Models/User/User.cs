@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using src.Models.ProjectModel;
 
 namespace src.Models.UserModel;
@@ -14,5 +15,6 @@ public class User {
     public string? Password { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-    public List<Project>? Projects { get; set; }
+    [JsonIgnore]
+    public ICollection<Project>? Projects { get; set; }
 }
