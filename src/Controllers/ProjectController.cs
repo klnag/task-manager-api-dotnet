@@ -66,4 +66,11 @@ public class ProjectController : ControllerBase {
         context.SaveChanges();
         return "project deleted";
     }
+
+    [HttpPost("userprojects")]
+    public IQueryable<Project> getAllProjectOfUser() {
+        int id = int.Parse(User.Identity.Name);
+        IQueryable<Project> allUserProjects = context.Projects.Where(p => p.UserId == id);
+        return allUserProjects;
+    }
 }
