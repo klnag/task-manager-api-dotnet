@@ -1,5 +1,5 @@
 watch:
 	dotnet watch --project src
 
-dupdate:
+update:
 	dotnet ef database update --project src

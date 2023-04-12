@@ -22,21 +22,21 @@ public class TodoController : ControllerBase {
     }
 
     [HttpPost]
-    public string Post(int id, string title)
+    public ActionResult<Todo> Post([FromBody] TodoDto todoFormBody)
     {
-        Project project = context.Projects.FirstOrDefault(u => u.Id == id);
+        Project project = context.Projects.FirstOrDefault(u => u.Id == todoFormBody.ProjectId);
         if (project != null)
         {
-            if (context.Todos.FirstOrDefault(proj => proj.Title == title) == null)
+            if (context.Todos.FirstOrDefault(proj => proj.Title == todoFormBody.Title) == null)
             {
-                Todo newTodo = new Todo { Title = title, Project = project };
+                Todo newTodo = new Todo { Title = todoFormBody.Title, Project = project };
                 context.Todos.Add(newTodo);
                 context.SaveChanges();
-                return "Todo created" + newTodo.Id;
+                return newTodo;
             }
-            return "Todo already exists";
+            return new BadRequestObjectResult("Todo already exists");
         }
-        return "project not found";
+        return new BadRequestObjectResult("project not found");
     }
 
     [HttpPatch("{id}")]

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using src.Helpers;
 using src.Models.ProjectModel;
 using src.Models.UserModel;
+using src.Models.TodoModel;
 using Microsoft.AspNetCore.Authorization;
 
 namespace src.Controllers;
@@ -72,5 +73,16 @@ public class ProjectController : ControllerBase {
         int id = int.Parse(User.Identity.Name);
         IQueryable<Project> allUserProjects = context.Projects.Where(p => p.UserId == id);
         return allUserProjects;
+    }
+
+    [HttpPost("projecttodos")]
+    public ActionResult<IQueryable<Todo>> getAllTasksOfPrject(int projectId) {
+        int userId = int.Parse(User.Identity.Name);
+        if (context.Users.Find(userId) != null)
+        {
+            IQueryable<Todo> allProjectTodos = context.Todos.Where(todo => todo.ProjectId == projectId);
+            return Ok(allProjectTodos);
+        }
+        return new BadRequestObjectResult("User does not exist");
     }
 }
