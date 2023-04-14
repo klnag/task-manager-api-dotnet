@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using src.Helpers;
 using src.Models.TodoModel;
 using src.Models.ProjectModel;
+using src.Models.CommentModel;
 using Microsoft.AspNetCore.Authorization;
 
 namespace src.Controllers;
@@ -27,14 +28,11 @@ public class TodoController : ControllerBase {
         Project project = context.Projects.FirstOrDefault(u => u.Id == todoFormBody.ProjectId);
         if (project != null)
         {
-            if (context.Todos.FirstOrDefault(proj => proj.Title == todoFormBody.Title) == null)
-            {
+            
                 Todo newTodo = new Todo { Title = todoFormBody.Title, Project = project };
                 context.Todos.Add(newTodo);
                 context.SaveChanges();
                 return newTodo;
-            }
-            return new BadRequestObjectResult("Todo already exists");
         }
         return new BadRequestObjectResult("project not found");
     }
@@ -80,5 +78,16 @@ public class TodoController : ControllerBase {
         context.Todos?.Remove(Todo);
         context.SaveChanges();
         return "Todo deleted";
+    }
+
+    [HttpGet("alltodocomments")]
+    public ActionResult<IQueryable<Comment>> GetAllTodoComments(int todoId) {
+       Todo? Todo = context.Todos?.Find(todoId);
+        if (Todo != null)
+        {
+            return Ok(context.Comments.Where(com => com.TodoId == todoId));
+        } 
+
+            return new BadRequestObjectResult("Todo does not exisit");
     }
 }

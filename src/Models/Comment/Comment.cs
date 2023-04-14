@@ -3,18 +3,20 @@ using src.Models.UserModel;
 using src.Models.TodoModel;
 using System.Text.Json.Serialization;
 
-namespace src.Models.ProjectModel;
+namespace src.Models.CommentModel;
 
-public class Project {
+public class Comment {
     [Key]
     public int Id { get; set; }
     [Required]
-    public string Name { get; set; }
+    public string Context { get; set; }
+    public string UserName { get; set; }
     public int UserId { get; set; }
+    public int TodoId { get; set; }
     [JsonIgnore]
     public User User { get; set; }
     [JsonIgnore]
-    public ICollection<Todo>? Todos { get; set; }
+    public Todo Todo { get; set; }
     public DateTime CreatedAt { get; } = DateTime.UtcNow;
     public DateTime UpdateddAt { get; set; } = DateTime.UtcNow;
 }

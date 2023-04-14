@@ -12,4 +12,6 @@ public class Todo {
     public string Status { get; set; } = "TODO";
     [JsonIgnore]
     public Project Project { get; set; }
+     public DateTime CreatedAt { get; } = DateTime.UtcNow;
+    public DateTime UpdateddAt { get; set; } = DateTime.UtcNow;
 }
