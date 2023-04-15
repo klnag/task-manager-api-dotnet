@@ -18,5 +18,5 @@ public class Comment {
     [JsonIgnore]
     public Todo Todo { get; set; }
     public DateTime CreatedAt { get; } = DateTime.UtcNow;
-    public DateTime UpdateddAt { get; set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 }

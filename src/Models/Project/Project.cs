@@ -16,5 +16,5 @@ public class Project {
     [JsonIgnore]
     public ICollection<Todo>? Todos { get; set; }
     public DateTime CreatedAt { get; } = DateTime.UtcNow;
-    public DateTime UpdateddAt { get; set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 }

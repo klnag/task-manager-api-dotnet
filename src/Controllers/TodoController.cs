@@ -66,7 +66,19 @@ public class TodoController : ControllerBase {
         context.SaveChanges();
         return Ok(context.Todos.Where(todo => todo.ProjectId == TodoFormBody.ProjectId));
     }
-
+    [HttpPatch("context/{id}")]
+    public ActionResult<IQueryable<Todo>> PatchContext(int id, [FromBody] TodoDto TodoFormBody)
+    {
+        Todo? Todo = context.Todos?.Find(id);
+        if (Todo == null)
+        {
+            return new BadRequestObjectResult("Todo does not exisit");
+        }
+        Todo.Context = TodoFormBody.Context;
+        context.Todos?.Update(Todo);
+        context.SaveChanges();
+        return Ok(context.Todos.Where(todo => todo.ProjectId == TodoFormBody.ProjectId));
+    }
     [HttpDelete("{id}")]
     public string Delete(int id)
     {
