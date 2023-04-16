@@ -29,7 +29,7 @@ public class TodoController : ControllerBase {
         if (project != null)
         {
             
-                Todo newTodo = new Todo { Title = todoFormBody.Title, Project = project };
+                Todo newTodo = new Todo { Title = todoFormBody.Title, Project = project, username = todoFormBody.username, index = todoFormBody.index };
                 context.Todos.Add(newTodo);
                 context.SaveChanges();
                 return newTodo;

@@ -9,6 +9,8 @@ public class Todo {
     [Required]
     public string? Title { get; set; }
     public string Context { get; set; } = "";
+    public string username { get; set; }
+    public int index { get; set; }
     public int ProjectId { get; set; }
     public string Status { get; set; } = "TODO";
     [JsonIgnore]
