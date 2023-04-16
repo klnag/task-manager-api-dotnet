@@ -38,47 +38,48 @@ public class TodoController : ControllerBase {
     }
 
     [HttpPatch("{id}")]
-    public string Patch(int id, [FromBody] TodoDto TodoFormBody)
+    public ActionResult<Todo> Patch(int id, [FromBody] TodoDto TodoFormBody)
     {
-        Todo? Todo = context.Todos?.Find(id);
-        if (Todo == null)
+        Todo? todo = context.Todos?.Find(id);
+        if (todo == null)
         {
-            return "Todo does not exisit";
+            return new BadRequestObjectResult("Todo does not exisit");
         }
-        Todo.Title = TodoFormBody.Title;
-        Todo.Status = TodoFormBody.Status;
-        context.Todos?.Update(Todo);
+        todo.Title = TodoFormBody.Title;
+        todo.Status = TodoFormBody.Status;
+        todo.Context = TodoFormBody.Context;
+        context.Todos?.Update(todo);
         context.SaveChanges();
-        return "Todo updated";
+        return todo;
     }
 
-    [HttpPatch("status/{id}")]
-    public ActionResult<IQueryable<Todo>> PatchStatus(int id, [FromBody] TodoDto TodoFormBody)
-    {
-        Todo? Todo = context.Todos?.Find(id);
-        if (Todo == null)
-        {
-            return new BadRequestObjectResult("Todo does not exisit");
-        }
-        Todo.Title = TodoFormBody.Title;
-        Todo.Status = TodoFormBody.Status;
-        context.Todos?.Update(Todo);
-        context.SaveChanges();
-        return Ok(context.Todos.Where(todo => todo.ProjectId == TodoFormBody.ProjectId));
-    }
-    [HttpPatch("context/{id}")]
-    public ActionResult<IQueryable<Todo>> PatchContext(int id, [FromBody] TodoDto TodoFormBody)
-    {
-        Todo? Todo = context.Todos?.Find(id);
-        if (Todo == null)
-        {
-            return new BadRequestObjectResult("Todo does not exisit");
-        }
-        Todo.Context = TodoFormBody.Context;
-        context.Todos?.Update(Todo);
-        context.SaveChanges();
-        return Ok(context.Todos.Where(todo => todo.ProjectId == TodoFormBody.ProjectId));
-    }
+    // [HttpPatch("status/{id}")]
+    // public ActionResult<IQueryable<Todo>> PatchStatus(int id, [FromBody] TodoDto TodoFormBody)
+    // {
+    //     Todo? Todo = context.Todos?.Find(id);
+    //     if (Todo == null)
+    //     {
+    //         return new BadRequestObjectResult("Todo does not exisit");
+    //     }
+    //     Todo.Title = TodoFormBody.Title;
+    //     Todo.Status = TodoFormBody.Status;
+    //     context.Todos?.Update(Todo);
+    //     context.SaveChanges();
+    //     return Ok(context.Todos.Where(todo => todo.ProjectId == TodoFormBody.ProjectId));
+    // }
+    // [HttpPatch("context/{id}")]
+    // public ActionResult<IQueryable<Todo>> PatchContext(int id, [FromBody] TodoDto TodoFormBody)
+    // {
+    //     Todo? Todo = context.Todos?.Find(id);
+    //     if (Todo == null)
+    //     {
+    //         return new BadRequestObjectResult("Todo does not exisit");
+    //     }
+    //     Todo.Context = TodoFormBody.Context;
+    //     context.Todos?.Update(Todo);
+    //     context.SaveChanges();
+    //     return Ok(context.Todos.Where(todo => todo.ProjectId == TodoFormBody.ProjectId));
+    // }
     [HttpDelete("{id}")]
     public string Delete(int id)
     {
@@ -92,14 +93,14 @@ public class TodoController : ControllerBase {
         return "Todo deleted";
     }
 
-    [HttpGet("alltodocomments")]
-    public ActionResult<IQueryable<Comment>> GetAllTodoComments(int todoId) {
-       Todo? Todo = context.Todos?.Find(todoId);
-        if (Todo != null)
-        {
-            return Ok(context.Comments.Where(com => com.TodoId == todoId));
-        } 
+    // [HttpGet("alltodocomments")]
+    // public ActionResult<IQueryable<Comment>> GetAllTodoComments(int todoId) {
+    //    Todo? Todo = context.Todos?.Find(todoId);
+    //     if (Todo != null)
+    //     {
+    //         return Ok(context.Comments.Where(com => com.TodoId == todoId));
+    //     } 
 
-            return new BadRequestObjectResult("Todo does not exisit");
-    }
+    //         return new BadRequestObjectResult("Todo does not exisit");
+    // }
 }

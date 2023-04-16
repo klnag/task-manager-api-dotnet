@@ -17,10 +17,10 @@ public class CommentController : ControllerBase {
         this.context = context;
     }
 
-    [HttpGet()]
-    public DbSet<Comment>? Get() {
-        return context.Comments;
-    }
+    // [HttpGet()]
+    // public DbSet<Comment>? Get() {
+    //     return context.Comments;
+    // }
 
     [HttpPost]
     public ActionResult<Comment> Post([FromBody] CommentDto CommentFormBody)
@@ -37,46 +37,13 @@ public class CommentController : ControllerBase {
         return new BadRequestObjectResult("todo not found");
     }
 
-    // [HttpPatch("{id}")]
-    // public string Patch(int id, [FromBody] CommentDto CommentFormBody)
-    // {
-    //     Comment? Comment = context.Comments?.Find(id);
-    //     if (Comment == null)
-    //     {
-    //         return "Comment does not exisit";
-    //     }
-    //     Comment.Title = CommentFormBody.Title;
-    //     Comment.Status = CommentFormBody.Status;
-    //     context.Comments?.Update(Comment);
-    //     context.SaveChanges();
-    //     return "Comment updated";
-    // }
-
-    // [HttpPatch("status/{id}")]
-    // public ActionResult<IQueryable<Comment>> PatchStatus(int id, [FromBody] CommentDto CommentFormBody)
-    // {
-    //     Comment? Comment = context.Comments?.Find(id);
-    //     if (Comment == null)
-    //     {
-    //         return new BadRequestObjectResult("Comment does not exisit");
-    //     }
-    //     Comment.Title = CommentFormBody.Title;
-    //     Comment.Status = CommentFormBody.Status;
-    //     context.Comments?.Update(Comment);
-    //     context.SaveChanges();
-    //     return Ok(context.Comments.Where(Comment => Comment.ProjectId == CommentFormBody.ProjectId));
-    // }
-
-    // [HttpDelete("{id}")]
-    // public string Delete(int id)
-    // {
-    //     Comment? Comment = context.Comments?.Find(id);
-    //     if (Comment == null)
-    //     {
-    //         return "Comment does not exisit";
-    //     }
-    //     context.Comments?.Remove(Comment);
-    //     context.SaveChanges();
-    //     return "Comment deleted";
-    // }
+    [HttpGet]
+    public ActionResult<IQueryable<Comment>> GetAllCommentsTodo(int todoId) {
+       Todo? Todo = context.Todos?.Find(todoId);
+        if (Todo != null)
+        {
+            return Ok(context.Comments.Where(com => com.TodoId == todoId));
+        } 
+        return new BadRequestObjectResult("Todo does not exisit");
+    }
 }
