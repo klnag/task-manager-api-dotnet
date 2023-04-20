@@ -103,4 +103,54 @@ public class TodoController : ControllerBase {
 
     //         return new BadRequestObjectResult("Todo does not exisit");
     // }
+
+    // PUT: api/TaskItems/5/position
+    [HttpPut("{id}/position")]
+    public async Task<ActionResult<Todo>> UpdateTaskPosition(int id, [FromBody] TodoDto request)
+    {
+        var taskItem = await context.Todos.FindAsync(id);
+        if (taskItem == null)
+        {
+            return NotFound();
+        }
+
+        int oldPosition = taskItem.index;
+        int newPosition = request.index;
+
+        if (request.Status == taskItem.Status)
+        {
+
+            if (oldPosition < newPosition)
+            {
+                // Move tasks between old and new position up
+                var tasksToMoveUp = context.Todos.Where(t => t.index > oldPosition && t.index <= newPosition);
+                foreach (var task in tasksToMoveUp)
+                {
+                    task.index--;
+                }
+            }
+            else if (oldPosition > newPosition)
+            {
+                // Move tasks between new and old position down
+                var tasksToMoveDown = context.Todos.Where(t => t.index >= newPosition && t.index < oldPosition);
+                foreach (var task in tasksToMoveDown)
+                {
+                    task.index++;
+                }
+            }
+        }else {
+            var tasksToMoveUp = context.Todos.Where(t => (t.index > oldPosition) && t.Status == taskItem.Status );
+                foreach (var task in tasksToMoveUp)
+                {
+                    task.index--;
+                }
+        }
+
+        taskItem.index = newPosition;
+        taskItem.Status = request.Status;
+        await context.SaveChangesAsync();
+
+        return taskItem;
+    }
+
 }
