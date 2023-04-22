@@ -81,7 +81,7 @@ public class ProjectController : ControllerBase {
         if (context.Users.Find(userId) != null)
         {
             IQueryable<Todo> allProjectTodos = context.Todos.Where(todo => todo.ProjectId == projectId);
-            return Ok(allProjectTodos);
+            return Ok(allProjectTodos.OrderBy(t => t.index));
         }
         return new BadRequestObjectResult("User does not exist");
     }

@@ -114,39 +114,39 @@ public class TodoController : ControllerBase {
             return NotFound();
         }
 
-        int oldPosition = taskItem.index;
-        int newPosition = request.index;
+        // int oldPosition = taskItem.index;
+        // int newPosition = request.index;
 
-        if (request.Status == taskItem.Status)
-        {
+        // if (request.Status == taskItem.Status)
+        // {
 
-            if (oldPosition < newPosition)
-            {
-                // Move tasks between old and new position up
-                var tasksToMoveUp = context.Todos.Where(t => t.index > oldPosition && t.index <= newPosition);
-                foreach (var task in tasksToMoveUp)
-                {
-                    task.index--;
-                }
-            }
-            else if (oldPosition > newPosition)
-            {
-                // Move tasks between new and old position down
-                var tasksToMoveDown = context.Todos.Where(t => t.index >= newPosition && t.index < oldPosition);
-                foreach (var task in tasksToMoveDown)
-                {
-                    task.index++;
-                }
-            }
-        }else {
-            var tasksToMoveUp = context.Todos.Where(t => (t.index > oldPosition) && t.Status == taskItem.Status );
-                foreach (var task in tasksToMoveUp)
-                {
-                    task.index--;
-                }
-        }
+        //     if (oldPosition < newPosition)
+        //     {
+        //         // Move tasks between old and new position up
+        //         var tasksToMoveUp = context.Todos.Where(t => t.index > oldPosition && t.index <= newPosition);
+        //         foreach (var task in tasksToMoveUp)
+        //         {
+        //             task.index--;
+        //         }
+        //     }
+        //     else if (oldPosition > newPosition)
+        //     {
+        //         // Move tasks between new and old position down
+        //         var tasksToMoveDown = context.Todos.Where(t => t.index >= newPosition && t.index < oldPosition);
+        //         foreach (var task in tasksToMoveDown)
+        //         {
+        //             task.index++;
+        //         }
+        //     }
+        // }else {
+        //     var tasksToMoveUp = context.Todos.Where(t => (t.index > oldPosition) && t.Status == taskItem.Status );
+        //         foreach (var task in tasksToMoveUp)
+        //         {
+        //             task.index--;
+        //         }
+        // }
 
-        taskItem.index = newPosition;
+        taskItem.index = request.index;
         taskItem.Status = request.Status;
         await context.SaveChangesAsync();
 
