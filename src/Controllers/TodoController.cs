@@ -37,21 +37,21 @@ public class TodoController : ControllerBase {
         return new BadRequestObjectResult("project not found");
     }
 
-    [HttpPatch("{id}")]
-    public ActionResult<Todo> Patch(int id, [FromBody] TodoDto TodoFormBody)
-    {
-        Todo? todo = context.Todos?.Find(id);
-        if (todo == null)
-        {
-            return new BadRequestObjectResult("Todo does not exisit");
-        }
-        todo.Title = TodoFormBody.Title;
-        todo.Status = TodoFormBody.Status;
-        todo.Context = TodoFormBody.Context;
-        context.Todos?.Update(todo);
-        context.SaveChanges();
-        return todo;
-    }
+    // [HttpPatch("{id}")]
+    // public ActionResult<Todo> Patch(int id, [FromBody] TodoDto TodoFormBody)
+    // {
+    //     Todo? todo = context.Todos?.Find(id);
+    //     if (todo == null)
+    //     {
+    //         return new BadRequestObjectResult("Todo does not exisit");
+    //     }
+    //     todo.Title = TodoFormBody.Title;
+    //     todo.Status = TodoFormBody.Status;
+    //     todo.Context = TodoFormBody.Context;
+    //     context.Todos?.Update(todo);
+    //     context.SaveChanges();
+    //     return todo;
+    // }
 
     // [HttpPatch("status/{id}")]
     // public ActionResult<IQueryable<Todo>> PatchStatus(int id, [FromBody] TodoDto TodoFormBody)
@@ -105,7 +105,7 @@ public class TodoController : ControllerBase {
     // }
 
     // PUT: api/TaskItems/5/position
-    [HttpPut("{id}/position")]
+    [HttpPatch("{id}")]
     public async Task<ActionResult<Todo>> UpdateTaskPosition(int id, [FromBody] TodoDto request)
     {
         var taskItem = await context.Todos.FindAsync(id);
@@ -146,6 +146,8 @@ public class TodoController : ControllerBase {
         //         }
         // }
 
+        taskItem.Title = request.Title;
+        taskItem.Context = request.Context;
         taskItem.index = request.index;
         taskItem.Status = request.Status;
         await context.SaveChangesAsync();
