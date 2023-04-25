@@ -13,6 +13,7 @@ public class Todo {
     public float index { get; set; }
     public int ProjectId { get; set; }
     public string Status { get; set; } = "TODO";
+    public string Priority { get; set; }
     [JsonIgnore]
     public Project Project { get; set; }
      public DateTime CreatedAt { get; } = DateTime.UtcNow;

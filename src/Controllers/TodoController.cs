@@ -29,7 +29,7 @@ public class TodoController : ControllerBase {
         if (project != null)
         {
             
-                Todo newTodo = new Todo { Title = todoFormBody.Title, Project = project, username = todoFormBody.username, index = todoFormBody.index };
+                Todo newTodo = new Todo { Title = todoFormBody.Title, Project = project, username = todoFormBody.username, index = todoFormBody.index, Priority = todoFormBody.Priority };
                 context.Todos.Add(newTodo);
                 context.SaveChanges();
                 return newTodo;
@@ -38,9 +38,9 @@ public class TodoController : ControllerBase {
     }
 
     [HttpPatch("{id}")]
-    public async Task<ActionResult<Todo>> UpdateTaskPosition(int id, [FromBody] TodoDto request)
+    public  ActionResult<Todo> UpdateTaskPosition(int id, [FromBody] TodoDto request)
     {
-        var taskItem = await context.Todos.FindAsync(id);
+        Todo taskItem =  context.Todos.Find(id);
         if (taskItem == null)
         {
             return NotFound();
@@ -50,7 +50,9 @@ public class TodoController : ControllerBase {
         taskItem.Context = request.Context;
         taskItem.index = request.index;
         taskItem.Status = request.Status;
-        await context.SaveChangesAsync();
+        taskItem.Priority = request.Priority;
+        context.Todos.Update(taskItem);
+        context.SaveChanges();
 
         return taskItem;
     }

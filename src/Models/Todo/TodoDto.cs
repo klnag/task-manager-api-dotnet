@@ -9,5 +9,6 @@ public class TodoDto {
     public string username { get; set; }
     public float index { get; set; }
     public int ProjectId { get; set; }
+    public string Priority { get; set; }
     public string Status { get; set; } = "TODO";
 }
