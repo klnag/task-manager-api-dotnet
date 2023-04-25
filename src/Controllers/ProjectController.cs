@@ -30,7 +30,7 @@ public class ProjectController : ControllerBase {
         {
             if (context.Projects.FirstOrDefault(proj => proj.Name == projectName.Name) == null)
             {
-                Project newProject = new Project { Name = projectName.Name, User =  user };
+                Project newProject = new Project { Name = projectName.Name, User =  user, ShareUsersId = {user.Id} };
                 context.Projects.Add(newProject);
                 context.SaveChanges();
                 return newProject;
@@ -71,7 +71,7 @@ public class ProjectController : ControllerBase {
     [HttpPost("userprojects")]
     public IQueryable<Project> getAllProjectOfUser() {
         int id = int.Parse(User.Identity.Name);
-        IQueryable<Project> allUserProjects = context.Projects.Where(p => p.UserId == id);
+        IQueryable<Project> allUserProjects = context.Projects.Where(p => p.ShareUsersId.Contains(id));
         return allUserProjects;
     }
 
@@ -84,5 +84,38 @@ public class ProjectController : ControllerBase {
             return Ok(allProjectTodos.OrderBy(t => t.index));
         }
         return new BadRequestObjectResult("User does not exist");
+    }
+
+    [HttpPatch("addUserIdToProject")]
+    public string addUserIdToProjectPost(int projectId, string sharedUserEmail) {
+        int userId = int.Parse(User.Identity.Name);
+        User user = context.Users.Find(userId);
+        User sharedUser = context.Users.FirstOrDefault(u => u.Email == sharedUserEmail);
+        if(sharedUser == null) {
+            return "couldt find email";
+        }
+        if(user != null) {
+            Project project = context.Projects.Find(projectId);
+            if(project != null) {
+                if(project.UserId == user.Id) {
+                    if(sharedUser != null) {
+                        if(!project.ShareUsersId.Contains(sharedUser.Id)) {
+                            project.ShareUsersId.Add(sharedUser.Id);
+                                context.Projects?.Update(project);
+                                context.SaveChanges();
+                            return "Done";
+                        }
+                        return "id alredy exist";
+                    } else {
+                        return "the shared user does not exist";
+                    }
+                } else {
+                    return "Project does not belongs to this user";
+                }
+            } else {
+                return "Project does not exist";
+            }
+        }
+        return "User Does not exisit";
     }
 }

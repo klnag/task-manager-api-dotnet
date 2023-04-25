@@ -11,6 +11,7 @@ public class Project {
     [Required]
     public string Name { get; set; }
     public int UserId { get; set; }
+    public List<int> ShareUsersId { get; set; } = new List<int>();
     [JsonIgnore]
     public User User { get; set; }
     [JsonIgnore]
