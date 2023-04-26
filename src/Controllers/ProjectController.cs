@@ -30,7 +30,7 @@ public class ProjectController : ControllerBase {
         {
             if (context.Projects.FirstOrDefault(proj => proj.Name == projectName.Name) == null)
             {
-                Project newProject = new Project { Name = projectName.Name, User =  user, ShareUsersId = {user.Id} };
+                Project newProject = new Project { Name = projectName.Name, User =  user, ShareUsersId =  {user.Id}, ShareUsersUsername = { user.Username}  };
                 context.Projects.Add(newProject);
                 context.SaveChanges();
                 return newProject;
@@ -71,7 +71,8 @@ public class ProjectController : ControllerBase {
     [HttpPost("userprojects")]
     public IQueryable<Project> getAllProjectOfUser() {
         int id = int.Parse(User.Identity.Name);
-        IQueryable<Project> allUserProjects = context.Projects.Where(p => p.ShareUsersId.Contains(id));
+        User user = context.Users.Find(id);
+        IQueryable<Project> allUserProjects = context.Projects.Where(p => p.ShareUsersId.Contains( user.Id));
         return allUserProjects;
     }
 
@@ -99,10 +100,12 @@ public class ProjectController : ControllerBase {
             if(project != null) {
                 if(project.UserId == user.Id) {
                     if(sharedUser != null) {
-                        if(!project.ShareUsersId.Contains(sharedUser.Id)) {
+                        // var p = project.ShareUsersId.FirstOrDefault(p => p.Id == sharedUser.Id);
+                        if(!project.ShareUsersId.Any(p => p == sharedUser.Id)) {
                             project.ShareUsersId.Add(sharedUser.Id);
-                                context.Projects?.Update(project);
-                                context.SaveChanges();
+                            project.ShareUsersUsername.Add(sharedUser.Username);
+                            context.Projects.Update(project);
+                            context.SaveChanges();
                             return "Done";
                         }
                         return "id alredy exist";

@@ -16,6 +16,7 @@ public class Todo {
     public string Priority { get; set; }
     [JsonIgnore]
     public Project Project { get; set; }
+    public string AssignTo { get; set; }
      public DateTime CreatedAt { get; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 }

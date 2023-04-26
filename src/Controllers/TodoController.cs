@@ -29,7 +29,7 @@ public class TodoController : ControllerBase {
         if (project != null)
         {
             
-                Todo newTodo = new Todo { Title = todoFormBody.Title, Project = project, username = todoFormBody.username, index = todoFormBody.index, Priority = todoFormBody.Priority };
+                Todo newTodo = new Todo { Title = todoFormBody.Title, Project = project, username = todoFormBody.username, index = todoFormBody.index, Priority = todoFormBody.Priority, AssignTo = todoFormBody.AssignTo };
                 context.Todos.Add(newTodo);
                 context.SaveChanges();
                 return newTodo;
@@ -51,6 +51,7 @@ public class TodoController : ControllerBase {
         taskItem.index = request.index;
         taskItem.Status = request.Status;
         taskItem.Priority = request.Priority;
+        taskItem.AssignTo = request.AssignTo;
         context.Todos.Update(taskItem);
         context.SaveChanges();
 

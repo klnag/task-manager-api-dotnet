@@ -12,6 +12,7 @@ public class Project {
     public string Name { get; set; }
     public int UserId { get; set; }
     public List<int> ShareUsersId { get; set; } = new List<int>();
+    public List<string> ShareUsersUsername { get; set; } = new List<string>();
     [JsonIgnore]
     public User User { get; set; }
     [JsonIgnore]
