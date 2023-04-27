@@ -51,16 +51,18 @@ public class UserController : ControllerBase {
         return user; 
     }
     [HttpPost] 
-    public ActionResult<string> Post(UserDto userFormBody) {
+    public ActionResult<ApiResponse<string>> Post(UserDto userFormBody) {
+        ApiResponse<string> response = new ApiResponse<string>();
         if(context.Users?.FirstOrDefault(user => user.Email == userFormBody.Email) == null) {
             string hashPassword = BCrypt.Net.BCrypt.HashPassword(userFormBody.Password);
             User newUser = new User { Username = userFormBody.Username, Email = userFormBody.Email, Password = hashPassword };
             context.Users?.Add(newUser);
             context.SaveChanges();
-            string token = userCreateJwt(newUser.Id+"");
-            return token;
+            response.Data = userCreateJwt(newUser.Id+"");
+            return response;
         }
-        return new BadRequestObjectResult("user with that email exist already exisit");
+        response.Error = "Email already exist.";
+        return BadRequest(response);
     }
 
     [HttpPost("login")]

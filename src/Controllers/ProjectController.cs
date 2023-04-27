@@ -69,9 +69,10 @@ public class ProjectController : ControllerBase {
     }
 
     [HttpPost("userprojects")]
-    public IQueryable<Project> getAllProjectOfUser() {
-        int id = int.Parse(User.Identity.Name);
-        User user = context.Users.Find(id);
+    public IQueryable<Project> getAllProjectOfUser(int userId) {
+        // int id = int.Parse(User.Identity.Name);
+        // Console.WriteLine(id);
+        User user = context.Users.Find(userId);
         IQueryable<Project> allUserProjects = context.Projects.Where(p => p.ShareUsersId.Contains( user.Id));
         return allUserProjects;
     }
