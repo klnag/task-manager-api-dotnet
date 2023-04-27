@@ -35,6 +35,11 @@ public class UserController : ControllerBase {
     // public DbSet<User>? Get() {
     //     return context.Users;
     // }
+    public class ApiResponse<T>
+    {
+        public T Data { get; set; }
+        public string Error { get; set; } = "";
+    }
 
     [HttpGet(), Authorize()]
     public ActionResult<User> GetInfo() {
@@ -59,15 +64,19 @@ public class UserController : ControllerBase {
     }
 
     [HttpPost("login")]
-    public string post(UserDto userFormBody) {
+    public ActionResult<ApiResponse<string>> post(UserDto userFormBody) {
+        ApiResponse<string> response = new ApiResponse<string>();
         User user = context.Users?.FirstOrDefault(user => user.Email == userFormBody.Email);
         if(user == null) {
-            return "email does not exist";
+            response.Error = "The username and/or password you specified are not correct.";
+            return BadRequest(response);
         }
         if(!BCrypt.Net.BCrypt.Verify(userFormBody.Password, user.Password)){
-            return "Password is incorect";
+            response.Error = "The username and/or password you specified are not correct.";
+            return BadRequest(response);
         }
-        return userCreateJwt(user.Id+"");
+            response.Data = userCreateJwt(user.Id+"");
+            return response;
     }
 
     [HttpPatch, Authorize]
