@@ -10,34 +10,46 @@ namespace src.Controllers;
 
 [ApiController, Authorize]
 [Route("api/[controller]")]
-public class ProjectController : ControllerBase {
+public class ProjectController : ControllerBase
+{
     private readonly DataContext context;
 
-    public ProjectController(DataContext context) {
+    public ProjectController(DataContext context)
+    {
         this.context = context;
     }
 
+    public class ApiResponse<T>
+    {
+        public T Data { get; set; }
+        public string Error { get; set; } = "";
+    }
     [HttpGet()]
-    public DbSet<Project>? Get() {
+    public DbSet<Project>? Get()
+    {
         return context.Projects;
     }
 
     [HttpPost]
-    public ActionResult<Project> Post([FromBody] ProjectDto projectName)
+    public ActionResult<ApiResponse<Project>> Post([FromBody] ProjectDto projectName)
     {
+        ApiResponse<Project> response = new ApiResponse<Project>();
         User user = context.Users.FirstOrDefault(u => u.Id == int.Parse(User.Identity.Name));
         if (user != null)
         {
             if (context.Projects.FirstOrDefault(proj => proj.Name == projectName.Name) == null)
             {
-                Project newProject = new Project { Name = projectName.Name, User =  user, ShareUsersId =  {user.Id}, ShareUsersUsername = { user.Username}  };
+                Project newProject = new Project { Name = projectName.Name, User = user, ShareUsersId = { user.Id }, ShareUsersUsername = { user.Username } };
                 context.Projects.Add(newProject);
                 context.SaveChanges();
-                return newProject;
+                response.Data = newProject;
+                return response;
             }
-            return new BadRequestObjectResult("project already exists");
+            response.Error = "project already exists";
+            return BadRequest(response);
         }
-        return new BadRequestObjectResult("user not found");
+        response.Error = "user not found";
+        return BadRequest(response);
     }
 
     [HttpPatch("{id}")]
@@ -69,16 +81,18 @@ public class ProjectController : ControllerBase {
     }
 
     [HttpPost("userprojects")]
-    public IQueryable<Project> getAllProjectOfUser(int userId) {
+    public IQueryable<Project> getAllProjectOfUser(int userId)
+    {
         // int id = int.Parse(User.Identity.Name);
         // Console.WriteLine(id);
         User user = context.Users.Find(userId);
-        IQueryable<Project> allUserProjects = context.Projects.Where(p => p.ShareUsersId.Contains( user.Id));
+        IQueryable<Project> allUserProjects = context.Projects.Where(p => p.ShareUsersId.Contains(user.Id));
         return allUserProjects;
     }
 
     [HttpPost("projecttodos")]
-    public ActionResult<IQueryable<Todo>> getAllTasksOfPrject(int projectId) {
+    public ActionResult<IQueryable<Todo>> getAllTasksOfPrject(int projectId)
+    {
         int userId = int.Parse(User.Identity.Name);
         if (context.Users.Find(userId) != null)
         {
@@ -89,37 +103,58 @@ public class ProjectController : ControllerBase {
     }
 
     [HttpPatch("addUserIdToProject")]
-    public string addUserIdToProjectPost(int projectId, string sharedUserEmail) {
+    public ActionResult<ApiResponse<string>> addUserIdToProjectPost(int projectId, string sharedUserEmail)
+    {
+        ApiResponse<string> response = new ApiResponse<string>();
         int userId = int.Parse(User.Identity.Name);
         User user = context.Users.Find(userId);
         User sharedUser = context.Users.FirstOrDefault(u => u.Email == sharedUserEmail);
-        if(sharedUser == null) {
-            return "couldt find email";
+        if (sharedUser == null)
+        {
+            response.Error = "couldt find email";
+            return BadRequest(response);
         }
-        if(user != null) {
+        if (user != null)
+        {
             Project project = context.Projects.Find(projectId);
-            if(project != null) {
-                if(project.UserId == user.Id) {
-                    if(sharedUser != null) {
+            if (project != null)
+            {
+                if (project.UserId == user.Id)
+                {
+                    if (sharedUser != null)
+                    {
                         // var p = project.ShareUsersId.FirstOrDefault(p => p.Id == sharedUser.Id);
-                        if(!project.ShareUsersId.Any(p => p == sharedUser.Id)) {
+                        if (!project.ShareUsersId.Any(p => p == sharedUser.Id))
+                        {
                             project.ShareUsersId.Add(sharedUser.Id);
                             project.ShareUsersUsername.Add(sharedUser.Username);
                             context.Projects.Update(project);
                             context.SaveChanges();
-                            return "Done";
+                            response.Data = "Done";
+                            return response;
                         }
-                        return "id alredy exist";
-                    } else {
-                        return "the shared user does not exist";
+                        response.Error = "id alredy exist";
+                        return BadRequest(response);
                     }
-                } else {
-                    return "Project does not belongs to this user";
+                    else
+                    {
+                        response.Error = "the shared user does not exist";
+                        return BadRequest(response);
+                    }
                 }
-            } else {
-                return "Project does not exist";
+                else
+                {
+                    response.Error = "Project does not belongs to this user";
+                    return BadRequest(response);
+                }
+            }
+            else
+            {
+                response.Error = "Project does not exist";
+                return BadRequest(response);
             }
         }
-        return "User Does not exisit";
+        response.Error = "User Does not exisit";
+        return BadRequest(response);
     }
 }
